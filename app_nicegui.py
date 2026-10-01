@@ -14,6 +14,7 @@ from nicegui import ui
 
 ARQUIVO_CARDAPIO = 'cardapio-los-tacos.csv'
 ARQUIVO_FICHAS = 'fichas.csv'
+ARQUIVO_VENDAS = 'vendas.csv'
 CMV_ALVO = 0.30
 
 # ---------- Identidade visual do Los Tacos ----------
@@ -38,6 +39,7 @@ def carregar_cardapio() -> dict:
                 'descricao': linha['descricao'],
                 'preco_venda': float(linha['preco']),
                 'ingredientes': [],
+                'vendidos': 0,
             }
     if Path(ARQUIVO_FICHAS).exists():
         with open(ARQUIVO_FICHAS, encoding='utf-8') as arquivo:
@@ -51,6 +53,11 @@ def carregar_cardapio() -> dict:
                     'un': linha['un'],
                     'preco': float(linha['preco']),
                 })
+    if Path(ARQUIVO_VENDAS).exists():
+        with open(ARQUIVO_VENDAS, encoding='utf-8') as arquivo:
+            for linha in csv.DictReader(arquivo):
+                if linha['prato_id'] in cardapio:
+                    cardapio[linha['prato_id']]['vendidos'] = int(linha['vendidos_mes'])
     return cardapio
 
 
@@ -98,6 +105,73 @@ def cor_do_cmv(prato: dict) -> tuple:
     return ROSA, 'Prato caro de produzir: revise porção, fornecedor ou preço.'
 
 
+# ---------- Engenharia de cardápio (Kasavana & Smith) ----------
+CLASSES = {
+    'Estrela': (MUSGO, 'Star', 'Vende muito e dá boa margem: mantenha e destaque.'),
+    'Burro de carga': (MOSTARDA, 'Plowhorse', 'Vende muito, margem baixa: reveja porção, fornecedor ou preço.'),
+    'Quebra-cabeça': (ROXO, 'Puzzle', 'Boa margem, vende pouco: mude a posição no cardápio ou a descrição.'),
+    'Cão': (ROSA, 'Dog', 'Vende pouco e dá pouca margem: reformule ou tire do cardápio.'),
+}
+
+
+def margem(prato: dict) -> float:
+    """Margem de contribuição: o que sobra de cada venda depois do custo dos ingredientes."""
+    return prato['preco_venda'] - custo_do_prato(prato)
+
+
+def engenharia() -> tuple:
+    """Classifica cada prato com ficha. Devolve (classes por id, corte de vendas, corte de margem)."""
+    pratos = {pid: p for pid, p in CARDAPIO.items() if p['ingredientes']}
+    total = sum(p['vendidos'] for p in pratos.values())
+    if not pratos or not total:
+        return {}, 0, 0
+    corte_vendas = 0.7 * total / len(pratos)  # 70% da participação média
+    corte_margem = sum(margem(p) * p['vendidos'] for p in pratos.values()) / total  # média ponderada
+    classes = {}
+    for pid, p in pratos.items():
+        popular = p['vendidos'] >= corte_vendas
+        lucrativo = margem(p) >= corte_margem
+        if popular and lucrativo:
+            classes[pid] = 'Estrela'
+        elif popular:
+            classes[pid] = 'Burro de carga'
+        elif lucrativo:
+            classes[pid] = 'Quebra-cabeça'
+        else:
+            classes[pid] = 'Cão'
+    return classes, corte_vendas, corte_margem
+
+
+def atualizar_matriz():
+    classes, corte_vendas, corte_margem = engenharia()
+    pontos = []
+    for pid, classe in classes.items():
+        p = CARDAPIO[pid]
+        destaque = pid == estado['prato']
+        pontos.append({
+            'name': p['nome'],
+            'value': [p['vendidos'], round(margem(p), 2)],
+            'symbolSize': 22 if destaque else 13,
+            'itemStyle': {'color': CLASSES[classe][0],
+                          'borderColor': TINTA if destaque else 'white', 'borderWidth': 3 if destaque else 1},
+        })
+    serie = matriz.options['series'][0]
+    serie['data'] = pontos
+    serie['markLine']['data'] = [{'xAxis': round(corte_vendas)}, {'yAxis': round(corte_margem, 2)}]
+    matriz.update()
+
+    classe = classes.get(estado['prato'])
+    if classe:
+        cor, ingles, acao = CLASSES[classe]
+        classe_label.set_text(f'{classe} ({ingles}) · {CARDAPIO[estado["prato"]]["vendidos"]} vendidos/mês')
+        classe_label.style(f'background:{cor}')
+        acao_label.set_text(acao)
+    else:
+        classe_label.set_text('Sem ficha técnica: fora da matriz')
+        classe_label.style(f'background:{CINZA}')
+        acao_label.set_text('')
+
+
 def atualizar(_=None, inicio=False):
     """Recalcula tudo quando qualquer campo muda."""
     prato = CARDAPIO[estado['prato']]
@@ -124,6 +198,7 @@ def atualizar(_=None, inicio=False):
     barras.options['yAxis']['data'] = [c['origem']['nome'] for c in campos]
     barras.options['series'][0]['data'] = custos
     barras.update()
+    atualizar_matriz()
     if not inicio:
         resumo.refresh()  # na abertura o resumo já é desenhado pronto
 
@@ -270,6 +345,35 @@ with ui.column().classes('w-full max-w-6xl mx-auto px-4 pt-6 pb-10 gap-6'):
                                 'label': {'show': True, 'position': 'right',
                               ':formatter': 'p => "R$ " + p.value.toFixed(2)'}}],
                 }).classes('w-full h-56')
+
+    # Engenharia de cardápio: largura toda, embaixo
+    with ui.column().classes('cartao p-6 w-full gap-3'):
+        with ui.row().classes('w-full items-center justify-between'):
+            with ui.column().classes('gap-0'):
+                ui.label('Engenharia de cardápio').classes('titulo text-3xl')
+                ui.label('Popularidade (vendas no mês) × margem de contribuição (preço − custo)') \
+                    .classes('text-sm text-gray-500')
+            with ui.column().classes('items-end gap-1'):
+                classe_label = ui.label().classes('text-white text-sm font-semibold px-4 py-2 rounded-full')
+                acao_label = ui.label().classes('text-sm text-gray-600')
+        matriz = ui.echart({
+            'grid': {'left': 60, 'right': 30, 'top': 20, 'bottom': 45},
+            'tooltip': {':formatter': 'p => p.name + "<br>" + p.value[0] + " vendidos · margem R$ " + p.value[1].toFixed(2)'},
+            'xAxis': {'type': 'value', 'name': 'vendidos no mês', 'nameLocation': 'middle', 'nameGap': 28,
+                      'splitLine': {'show': False}},
+            'yAxis': {'type': 'value', 'name': 'margem (R$)', 'splitLine': {'show': False}},
+            'series': [{
+                'type': 'scatter', 'data': [],
+                'label': {'show': True, 'position': 'right', 'formatter': '{b}', 'fontSize': 11},
+                'markLine': {'silent': True, 'symbol': 'none', 'label': {'show': False},
+                             'lineStyle': {'type': 'dashed', 'color': CINZA}, 'data': []},
+            }],
+        }).classes('w-full h-[420px]')
+        with ui.row().classes('w-full gap-6 justify-center'):
+            for nome, (cor, ingles, _) in CLASSES.items():
+                with ui.row().classes('items-center gap-2'):
+                    ui.element('div').classes('w-3 h-3 rounded-full').style(f'background:{cor}')
+                    ui.label(f'{nome} ({ingles})').classes('text-sm')
 
 atualizar(inicio=True)  # calcula uma vez ao abrir
 
