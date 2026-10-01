@@ -1,0 +1,78 @@
+prato_id,ingrediente,qtd,un,preco
+t1,Pernil (carnitas),0.12,kg,32.00
+t1,Tortilha de milho,3,un,0.90
+t1,Cebola e coentro,0.03,kg,14.00
+t1,Salsa verde,0.05,kg,22.00
+t1,Limão,1,un,0.50
+t2,Frango,0.12,kg,24.00
+t2,Tortilha de milho,3,un,0.90
+t2,Chipotle,0.02,kg,60.00
+t2,Alface,0.02,kg,15.00
+t2,Pico de gallo,0.05,kg,18.00
+t3,Contra-filé,0.12,kg,62.00
+t3,Tortilha de milho,3,un,0.90
+t3,Guacamole,0.04,kg,35.00
+t3,Cebola caramelizada,0.05,kg,10.00
+t4,Camarão,0.12,kg,85.00
+t4,Tortilha de milho,3,un,0.90
+t4,Maionese de limão,0.03,kg,25.00
+t4,Jalapeño,0.01,kg,40.00
+t5,Cogumelo portobello,0.08,kg,45.00
+t5,Pimentão,0.06,kg,14.00
+t5,Hummus,0.04,kg,30.00
+t5,Tortilha de milho,3,un,0.90
+q1,Tortilha de trigo,2,un,1.50
+q1,Queijo canastra,0.08,kg,60.00
+q1,Molho ranchero,0.05,kg,16.00
+q2,Tortilha de trigo,2,un,1.50
+q2,Frango desfiado,0.10,kg,24.00
+q2,Queijo canastra,0.06,kg,60.00
+q2,Pimentão,0.04,kg,14.00
+q2,Creme de abacate,0.04,kg,30.00
+q3,Tortilha de trigo,2,un,1.50
+q3,Camarão,0.10,kg,85.00
+q3,Queijo canastra,0.05,kg,60.00
+q3,Tomate seco,0.02,kg,70.00
+q3,Pesto de coentro,0.02,kg,60.00
+b1,Tortilha grande,1,un,2.50
+b1,Arroz,0.08,kg,7.00
+b1,Feijão preto,0.08,kg,12.00
+b1,Carne assada,0.12,kg,62.00
+b1,Queijo canastra,0.03,kg,60.00
+b1,Pico de gallo,0.05,kg,18.00
+b2,Tortilha grande,1,un,2.50
+b2,Arroz,0.08,kg,7.00
+b2,Feijão preto,0.08,kg,12.00
+b2,Legumes grelhados,0.15,kg,14.00
+b2,Guacamole,0.05,kg,35.00
+n1,Chips de milho,0.12,kg,28.00
+n1,Queijo nacho,0.08,kg,40.00
+n1,Jalapeño,0.02,kg,40.00
+n1,Creme azedo,0.04,kg,30.00
+n2,Chips de milho,0.12,kg,28.00
+n2,Carnitas,0.12,kg,32.00
+n2,Queijo nacho,0.08,kg,40.00
+n2,Guacamole,0.05,kg,35.00
+n2,Pico de gallo,0.05,kg,18.00
+e1,Abacate,0.15,kg,14.00
+e1,Coentro,0.01,kg,40.00
+e1,Limão,1,un,0.50
+e2,Tomatilho,0.10,kg,30.00
+e2,Pimenta serrano,0.01,kg,50.00
+e2,Coentro,0.01,kg,40.00
+e3,Tomate,0.10,kg,9.00
+e3,Cebola,0.04,kg,6.00
+e3,Coentro,0.01,kg,40.00
+e3,Jalapeño,0.01,kg,40.00
+d2,Limão,3,un,0.50
+d2,Mel de agave,0.02,l,120.00
+d2,Pimenta caiena,0.001,kg,200.00
+d2,Gelo,1,un,0.30
+d4,Tequila,0.045,l,150.00
+d4,Triple sec,0.02,l,90.00
+d4,Limão,2,un,0.50
+d4,Sal,1,un,0.10
+d5,Tequila,0.045,l,150.00
+d5,Maracujá,0.10,kg,20.00
+d5,Triple sec,0.015,l,90.00
+d5,Tajín,0.005,kg,200.00

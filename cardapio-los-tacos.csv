@@ -1,0 +1,22 @@
+id,categoria,nome,descricao,preco
+t1,Tacos,Taco Carnitas,Pernil desfiado com cebola coentro e salsa verde,28
+t2,Tacos,Taco Frango,Frango grelhado com chipotle alface e pico de gallo,24
+t3,Tacos,Taco Carne Assada,Contra-filé marinado com guacamole e cebola caramelizada,32
+t4,Tacos,Taco Camarão,Camarão temperado com maionese de limão e jalapeño,38
+t5,Tacos,Taco Vegano,Cogumelos portobello com pimentão grelhado e hummus,22
+q1,Quesadillas,Quesadilla Queijo,Queijo canastra derretido com molho ranchero,26
+q2,Quesadillas,Quesadilla Frango,Frango desfiado com queijo pimentão e creme de abacate,30
+q3,Quesadillas,Quesadilla Camarão,Camarão com queijo tomate seco e pesto de coentro,42
+b1,Burritos,Burrito Completo,Arroz feijão preto carne assada queijo e pico de gallo,36
+b2,Burritos,Burrito Vegetariano,Arroz feijão legumes grelhados e guacamole,28
+n1,Nachos,Nachos Clássicos,Chips com queijo nacho jalapeño e creme azedo,32
+n2,Nachos,Nachos Carnitas,Chips com carnitas queijo guacamole e pico de gallo,44
+e1,Extras,Guacamole,Abacate fresco com coentro limão e sal,14
+e2,Extras,Salsa Verde,Tomatilho com pimenta serrano e coentro,8
+e3,Extras,Pico de Gallo,Tomate cebola coentro e jalapeño,8
+d1,Bebidas,Agua de Jamaica,Chá de hibisco gelado com hortelã,12
+d2,Bebidas,Limonada Mexicana,Limão com mel de agave e pimenta caiena,14
+d3,Bebidas,Cerveja Artesanal,Rotação semanal pergunte a variedade,18
+d4,Bebidas,Margarita Clássica,Tequila com triple sec limão e sal na borda,28
+d5,Bebidas,Margarita Maracujá,Tequila com maracujá fresco e borda de tajín,32
+d6,Bebidas,Água,Com ou sem gás,6
