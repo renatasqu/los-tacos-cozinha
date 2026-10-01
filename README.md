@@ -1,9 +1,9 @@
 # 🌮 Los Tacos · Cozinha
 
 App interno para a equipe de cozinha de um restaurante **fictício**, o Los Tacos (Box D3).
-Mostra a **ficha técnica** de cada item do cardápio, o **custo por porção**, o **CMV** e o
-**preço sugerido**, com um semáforo que indica quais pratos precisam de atenção.
-
+Mostra a **ficha técnica** de cada item do cardápio, o **custo por porção**, o **CMV**, o
+**preço sugerido** e a **engenharia de cardápio**, com alertas visuais sobre quais pratos
+precisam de atenção.
 
 ## Por que este projeto
 
@@ -13,23 +13,46 @@ consegue usar no dia a dia.
 
 ## O que ele faz
 
-- Lê o cardápio e as fichas técnicas de dois arquivos CSV
+- Lê o cardápio, as fichas técnicas e as vendas de três arquivos CSV
 - Calcula custo por porção, CMV e preço sugerido para CMV de 30%
 - Velocímetro de CMV: verde (até 30%), amarelo (até 35%) e vermelho (acima)
 - Mostra quais ingredientes pesam mais no custo de cada prato
 - Lista o cardápio inteiro do pior para o melhor CMV
+- Matriz de engenharia de cardápio (Stars, Plowhorses, Puzzles e Dogs), cruzando vendas e margem de contribuição
 - Permite editar quantidades e preços na tela e salvar de volta nos CSVs
+
+**Achado:** o Taco Carnitas tem CMV de 30,6%, acima da meta, mas é uma **Estrela**: vende muito
+e deixa R$ 19,44 de margem por venda. Olhar só o CMV engana.
+
+## Engenharia de cardápio
+
+| | Margem alta | Margem baixa |
+|---|---|---|
+| **Vende muito** | 🟢 Estrela (Star): manter e destacar | 🟡 Burro de carga (Plowhorse): rever porção, fornecedor ou preço |
+| **Vende pouco** | 🟣 Quebra-cabeça (Puzzle): mudar posição ou descrição no cardápio | 🔴 Cão (Dog): reformular ou tirar |
+
+- **Margem de contribuição** = preço de venda − custo dos ingredientes
+- **Vende muito** = vendas ≥ 70% da participação média dos pratos (regra de Kasavana & Smith)
+- **Margem alta** = margem ≥ média ponderada pelas vendas
 
 ## Como rodar
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-pip install nicegui
+pip install -r requirements.txt
 python3 app_nicegui.py
 ```
 
 Abra http://localhost:8080.
+
+## Arquivos de dados
+
+| Arquivo | Colunas |
+|---|---|
+| `cardapio-los-tacos.csv` | id, categoria, nome, descricao, preco |
+| `fichas.csv` | prato_id, ingrediente, qtd, un, preco |
+| `vendas.csv` | prato_id, vendidos_mes |
 
 ## Como o projeto evoluiu
 
@@ -44,7 +67,7 @@ Este foi o meu primeiro projeto em Python, construído em etapas:
 | Fase | O que entra | O que o app passa a mostrar |
 |---|---|---|
 | ✅ 1 | Fichas técnicas | Custo, CMV e preço sugerido por prato |
-| 2 | Vendas | Popularidade, margem de contribuição e matriz Stars / Plowhorses / Puzzles / Dogs |
+| ✅ 2 | Vendas | Popularidade, margem de contribuição e matriz Stars / Plowhorses / Puzzles / Dogs |
 | 3 | Compras | Evolução do custo dos ingredientes e alertas de alta |
 | 4 | Estoque | Desperdício: CMV teórico × CMV real |
 | 5 | SQLite | Todos os dados cruzados num banco |
@@ -52,6 +75,6 @@ Este foi o meu primeiro projeto em Python, construído em etapas:
 
 ## Dados
 
-O restaurante, o cardápio e as fichas técnicas são **fictícios**, criados para este projeto.
+O restaurante, o cardápio, as fichas técnicas e as vendas são **fictícios**, criados para este projeto.
 
 **Stack:** Python · NiceGUI · ECharts · CSV
